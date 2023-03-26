@@ -7,7 +7,7 @@ from transformers import pipeline, set_seed
 
 class LLM_Task_Form(FlaskForm):
     llm = SelectField('LLM', choices=[('distilbert', 'DistilBERT'), ('other', 'Other')])
-    task = SelectField('Task', choices=[('mlm', 'Masked Language Modeling'), ('other', 'Other')])
+    task = SelectField('Task', choices=[('fill', 'Fill Mask'), ('other', 'Other')])
     text = StringField('Text', validators=[DataRequired(), Length(1, 200)])
     submit = SubmitField()
 
@@ -28,7 +28,7 @@ def index():
     output = None
     if form.is_submitted():
         if form.llm.data == 'distilbert':
-            if form.task.data == 'mlm':
+            if form.task.data == 'fill':
                 # set seed for reproducible results
                 set_seed(10)
                 # specify model checkpoint
