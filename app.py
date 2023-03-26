@@ -4,10 +4,11 @@ from wtforms.fields import SelectField, StringField, SubmitField
 from wtforms.validators import DataRequired, Length
 from flask_bootstrap import Bootstrap5
 from transformers import pipeline, set_seed
+from sentence_transformers import SentenceTransformer, util
 
 class LLM_Task_Form(FlaskForm):
-    llm = SelectField('LLM', choices=[('distilbert', 'DistilBERT'), ('other', 'Other')])
-    task = SelectField('Task', choices=[('fill', 'Fill Mask'), ('other', 'Other')])
+    llm = SelectField('LLM', choices=[('distilbert', 'DistilBERT'), ('gpt', 'GPT2')])
+    task = SelectField('Task', choices=[('fill', 'Fill Mask'), ('gen', 'Text Generation')])
     text = StringField('Text', validators=[DataRequired(), Length(1, 200)])
     submit = SubmitField()
 
@@ -35,4 +36,12 @@ def index():
                 model_checkpoint = 'distilbert-base-uncased'
                 unmasker = pipeline('fill-mask', model=model_checkpoint)
                 output = unmasker(form.text.data)
+        elif form.llm.data == 'gpt':
+            if form.task.data == 'gen':
+                # set seed for reproducible results
+                set_seed(10)
+                # specify model checkpoint
+                model_checkpoint = 'gpt2'
+                generator = pipeline('text-generation', model=model_checkpoint)
+                output = generator(form.text.data, max_new_tokens=1, num_return_sequences=5, repetition_penalty=100.0)
     return render_template('index.html', form=form, result=output)
