@@ -37,7 +37,11 @@ def index():
                 model_checkpoint = 'gpt2'
             model = SentenceTransformer(model_checkpoint)
             # Compute embeddings and cosine similarity
-            results = util.paraphrase_mining(model, sentences)
+            try:
+                results = util.paraphrase_mining(model, sentences)
+            except ValueError:
+                model.tokenizer.pad_token = model.tokenizer.eos_token
+                results = util.paraphrase_mining(model, sentences)
             output = [{'Cosine Similarity': i[0], 'Sentence 1': sentences[i[1]], 'Sentence 2': sentences[i[2]]} for i in results]
             output = pd.DataFrame(output).to_html(classes='table').replace('class="dataframe table"', 'class="table"')
         elif form.llm.data == 'distilbert':
