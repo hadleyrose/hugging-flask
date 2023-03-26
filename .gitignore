@@ -1,0 +1,13 @@
+# ignore everything
+/*
+
+# except gitignore
+!.gitignore
+
+# except app and associated files
+!app.py
+!/templates/
+!/static/
+
+# and environment
+!nlp.yml
