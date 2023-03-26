@@ -43,7 +43,6 @@ def index():
                 model.tokenizer.pad_token = model.tokenizer.eos_token
                 results = util.paraphrase_mining(model, sentences)
             output = [{'Cosine Similarity': i[0], 'Sentence 1': sentences[i[1]], 'Sentence 2': sentences[i[2]]} for i in results]
-            output = pd.DataFrame(output).to_html(classes='table').replace('class="dataframe table"', 'class="table"')
         elif form.llm.data == 'distilbert':
             if form.task.data == 'fill':
                 # set seed for reproducible results
@@ -60,4 +59,6 @@ def index():
                 model_checkpoint = 'gpt2'
                 generator = pipeline('text-generation', model=model_checkpoint)
                 output = generator(form.text.data, max_new_tokens=1, num_return_sequences=5, repetition_penalty=100.0)
+        if output is not None:
+            output = pd.DataFrame(output).to_html(classes='table', index=False).replace('class="dataframe table"', 'class="table table-hover"').replace('<tr style="text-align: right;"', '<tr')
     return render_template('index.html', form=form, result=output)

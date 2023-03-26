@@ -6,7 +6,10 @@
     {{ render_form(form, button_style='success', button_size='block') }}
 
     {% if result %}
-        {{ result|safe }}
+        <br>
+        <div class="container">
+            {{ result|safe }}
+        </div>
     {% endif %}
 
 {% endblock %}
