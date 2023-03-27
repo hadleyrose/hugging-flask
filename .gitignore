@@ -11,3 +11,6 @@
 
 # and environment
 !nlp.yml
+
+# and README
+!README.md
